@@ -12,7 +12,7 @@ mid = datetime.datetime(now.year, now.month, now.day) + datetime.timedelta(1)
 total = 0
 
 # 자동 거래 시작
-while total < 1200000000:
+while total < 1001000000:
     try:
         now = datetime.datetime.now()
 
