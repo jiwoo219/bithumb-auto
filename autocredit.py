@@ -26,7 +26,7 @@ while total < 1200000000:
             balance = bithumb.get_balance(coin)
 
             # 매도
-            if balance[0] > 0.000001:
+            if balance[0] > 0.0001:
                 time.sleep(5)
                 ask_price = Bithumb.get_orderbook(coin)['asks'][0]['price'] # 제 1 매도호가
                 desc = bithumb.sell_limit_order(coin, ask_price, balance[0])
@@ -38,16 +38,16 @@ while total < 1200000000:
                     
                     if not quanity: # 매도 완료
                         total += ask_price * balance[0]
+                        print("sell successfully")
+                        print("total", total)
                         break
                 
                 if quanity:
                     status = bithumb.cancel_order(desc)
-                    print('cancel order', status)
-
-                print("total", total)
+                    print('cancel sell', status)
 
             # 매수
-            if balance[0] < 0.000001:
+            if balance[0] <= 0.0001:
                 time.sleep(5)
                 bid_price = Bithumb.get_orderbook(coin)['bids'][0]['price'] # 제 1 매수호가
                 if balance[2] < 930000: # 손실이 많이 일어났으면 Stop
@@ -62,13 +62,13 @@ while total < 1200000000:
 
                     if not quanity: # 매수 완료
                         total += balance[2] * 0.99
+                        print("buy successfully")
+                        print("total", total)
                         break
                 
                 if quanity:
                     status = bithumb.cancel_order(desc)
-                    print('cancel order', status)
-
-                print("total", total)
+                    print('cancel buy', status)
 
     except Exception as e:
         print(f"An error occurred: {e}")
