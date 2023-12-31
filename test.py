@@ -2,7 +2,7 @@ from pybithumb import Bithumb
 import time
 import datetime
 
-bithumb = Bithumb("e94e5052bc5971b42f885a175507c5f9", "53582a67fc5d830641e5e8c1edb332b0")
+bithumb = Bithumb("06b42812e4aaec48580d555510727836", "a67680d16e15140a872911b6728e0be9")
 
 
 # 코인 리스트 가져오기
@@ -18,6 +18,9 @@ now = datetime.datetime.now()
 mid = datetime.datetime(now.year, now.month, now.day) + datetime.timedelta(1)
 total = 0
 
+sell_start_time = datetime.datetime.now()
+buy_start_time = datetime.datetime.now()
+
 # 자동 거래 시작
 while total < 1200000000:
     try:
@@ -32,12 +35,16 @@ while total < 1200000000:
             # 코인의 현재 잔고 조회
             balance = bithumb.get_balance(coin)
 
+            if balance[1] > 0.000001 and now > sell_start_time + datetime.timedelta(seconds=30):
+                
+
             # 매도
             if balance[0] > 0.000001 and balance[1] < 0.000001:
                 time.sleep(5)
                 ask_price = Bithumb.get_orderbook(coin)['asks'][0]['price'] # 제 1 매도호가
                 desc = bithumb.sell_limit_order(coin, ask_price, balance[0])
                 total += ask_price * balance[0]
+                sell_start_time = datetime.datetime.now()
                 print(desc)
                 print("total", total)
 
@@ -48,7 +55,7 @@ while total < 1200000000:
                 if balance[2] < 930000:
                     total = 16000000000
 
-                desc = bithumb.buy_limit_order(coin, bid_price, balance[2] / float(bid_price))
+                desc = bithumb.buy_limit_order(coin, bid_price, balance[2] / float(bid_price) * 0.99)
                 total += balance[2] * 0.85
                 print(desc)
                 print("total", total)
