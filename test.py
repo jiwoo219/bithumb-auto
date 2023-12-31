@@ -25,27 +25,26 @@ while total < 1500000000:
             # 코인의 현재 잔고 조회
             balance = bithumb.get_balance(coin)
 
+            # 매도
             if balance[0] > 0.000001 and balance[1] < 0.000001:
-                # 매도
-                ask_price = Bithumb.get_orderbook(coin)['asks'][1]['price'] # 제 2 매도호가
+                time.sleep(10)
+                
+                ask_price = Bithumb.get_orderbook(coin)['asks'][0]['price'] # 제 1 매도호가
                 desc = bithumb.sell_limit_order(coin, ask_price, balance[0])
                 total += ask_price * balance[0]
                 print(desc)
-
-                time.sleep(10)
                 print("total", total)
 
+            # 매수
             if balance[0] < 0.000001 and balance[3] < 0.000001:
-                # 매수
-                bid_price = Bithumb.get_orderbook(coin)['bids'][1]['price'] # 제 2 매수호가
-                if balance[2] < 400000:
+                time.sleep(10)
+                bid_price = Bithumb.get_orderbook(coin)['bids'][0]['price'] # 제 1 매수호가
+                if balance[2] < 730000:
                     total = 16000000000
 
                 desc = bithumb.buy_limit_order(coin, bid_price, balance[2] / bid_price * 0.99)
                 total += balance[2] * 0.85
                 print(desc)
-
-                time.sleep(10)
                 print("total", total)
 
             # 24시간이 경과하면 total을 0으로 초기화
