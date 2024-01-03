@@ -12,14 +12,18 @@ mid = datetime.datetime(now.year, now.month, now.day) + datetime.timedelta(1)
 total = 0
 
 # 자동 거래 시작
-while total < 1001000000:
+while True:
     try:
         now = datetime.datetime.now()
 
         # 자정이면 total 초기화
-        if mid < now < mid + datetime.timedelta(seconds=10):
+        if mid < now + datetime.timedelta(hours=9) < mid + datetime.timedelta(seconds=10):
             mid = datetime.datetime(now.year, now.month, now.day) + datetime.datetime(1)
             total = 0
+
+        # 15억 이상이면 스탑
+        if total > 1500000000:
+            continue
 
         for coin in coins:
             # 코인의 현재 잔고 조회
@@ -28,7 +32,7 @@ while total < 1001000000:
             # 매도
             if balance[0] > 0.0001:
                 time.sleep(5)
-                ask_price = Bithumb.get_orderbook(coin)['asks'][0]['price'] # 제 1 매도호가
+                ask_price = Bithumb.get_orderbook(coin)['asks'][1]['price'] # 제 2 매도호가
                 desc = bithumb.sell_limit_order(coin, ask_price, balance[0])
                 start_time = time.time()
 
@@ -50,7 +54,7 @@ while total < 1001000000:
             if balance[0] <= 0.0001:
                 time.sleep(5)
                 bid_price = Bithumb.get_orderbook(coin)['bids'][0]['price'] # 제 1 매수호가
-                if balance[2] < 930000: # 손실이 많이 일어났으면 Stop
+                if balance[2] < 910000: # 손실이 많이 일어났으면 Stop
                     total = 16000000000
 
                 desc = bithumb.buy_limit_order(coin, bid_price, balance[2] / bid_price * 0.99)
