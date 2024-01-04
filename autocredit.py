@@ -31,7 +31,7 @@ while True:
 
             # 매도
             if balance[0] > 0.0001:
-                time.sleep(5)
+                time.sleep(2)
                 ask_price = Bithumb.get_orderbook(coin)['asks'][1]['price'] # 제 2 매도호가
                 desc = bithumb.sell_limit_order(coin, ask_price, balance[0])
                 start_time = time.time()
@@ -52,9 +52,9 @@ while True:
 
             # 매수
             if balance[0] <= 0.0001:
-                time.sleep(5)
+                time.sleep(2)
                 bid_price = Bithumb.get_orderbook(coin)['bids'][0]['price'] # 제 1 매수호가
-                if balance[2] < 910000: # 손실이 많이 일어났으면 Stop
+                if balance[2] < 1060000: # 손실이 많이 일어났으면 Stop
                     total = 16000000000
 
                 desc = bithumb.buy_limit_order(coin, bid_price, balance[2] / bid_price * 0.99)
