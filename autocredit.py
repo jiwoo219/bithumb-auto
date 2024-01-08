@@ -27,34 +27,36 @@ while True:
             continue
 
         # 코인의 현재 잔고 조회
-        balance = bithumb.get_balance(coin)
+        balance = bithumb.get_balance(coin) # 비트코인의 총 잔고, 거래 중인 비트코인의 수량, 보유 중인 총원화, 주문에 사용된 원화
 
         # 매도
         if balance[0] > 0.0001:
-            time.sleep(1)
+            time.sleep(2)
             ask_price = Bithumb.get_orderbook(coin)['asks'][0]['price'] # 제 1 매도호가
             sell_price = max(ask_price, buy_price)
+
             desc = bithumb.sell_limit_order(coin, sell_price, balance[0])
             start_time = time.time()
 
             # 20초 이내에 팔리지 않으면 매도 취소
             while time.time() - start_time < 20:
                 quanity = bithumb.get_outstanding_order(desc)
+                balance = bithumb.get_balance(coin)
                 
-                if not quanity: # 매도 완료
+                if not balance[1]: # 매도 완료
                     total += sell_price * balance[0]
                     print("sell successfully")
                     print("total", total)
                     break
             
-            if quanity: # 매도 실패
+            if balance[1]: # 매도 실패
                 status = bithumb.cancel_order(desc)
                 buy_price = ask_price
                 print('cancel sell', status)
 
         # 매수
         if balance[0] <= 0.0001:
-            time.sleep(1)
+            time.sleep(2)
             bid_price = Bithumb.get_orderbook(coin)['bids'][0]['price'] # 제 1 매수호가
 
             if balance[2] < 970000: # 손실이 많이 일어났으면 Stop
