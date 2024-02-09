@@ -12,7 +12,7 @@ def get_target_price(ticker):
     yesterday_high = yesterday['high']
     yesterday_low = yesterday['low']
     target = today_open + (yesterday_high - yesterday_low) * 0.5
-    print(target)
+    return target
 
 
 def buy_crypto_currency(ticker):
